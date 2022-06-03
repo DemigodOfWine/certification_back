@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+      <form>
+
+          <table class="table">
+              <tr>
+                  <td> Всего </td> <td>{{ total }}</td>
+              </tr>
+              {% for form in forms %}
+              <tr>
+                  <td>{{ form.model__model_name }} </td> <td>{{ form.num }}</td>
+              </tr>
+              {% endfor %}
+          </table>
+
+      </form>
+
+
+
+{% endblock %}

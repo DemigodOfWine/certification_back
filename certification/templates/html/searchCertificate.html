@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+      <form action="/search/" method="post">
+          {% csrf_token %}
+          <table class="table">
+              <tr>
+                  <td> Модель: {{form.model}} <br></td>
+                  <td> Допуск к эксплуатации {{ form.result }} </td>
+                  <td> Этап паспортизации  </td>
+                  <td> {{ form.verification }} </td>
+              </tr>
+              <tr>
+                  <td> Серийный номер от </td> <td style="text-transform: uppercase;"> {{ form.serialNumberDown }} </td>
+                  <td> Серийный номер до </td> <td style="text-transform: uppercase;"> {{ form.serialNumberUp }} </td>
+              </tr>
+              <tr>
+                  <td> Дата первой записи </td> <td style="text-transform: uppercase;"> {{ form.date_time_first }} </td>
+                  <td> Дата последней записи </td> <td style="text-transform: uppercase;"> {{ form.date_time_last }} </td>
+              </tr>
+              <tr>
+                  <td>{{ form.error_messages }}</td>
+                  <td></td>
+              </tr>
+
+          </table>
+          <input class="input-group" type="submit" value="Найти">
+
+      </form>
+        <table>
+                <tr>
+                    <h5>Найдены дубликаты:</h5>
+                </tr>
+                <tr>
+                    {% for unit in stat %}
+                    {{ unit.serial_number }}:{{ unit.num }} //
+                    {% endfor %}
+                </tr>
+        </table>
+        <hr>
+      <form action="/print/" method="post" target="_blank">
+          {% csrf_token %}
+          <input class="button" type="submit" value="Печать">
+          <label><input type="radio" checked name="lang" value="RUS"/> RUS <input type="radio" name="lang" value="ENG"/> ENG </label>
+          {{ form.num }}
+         {% for unit in res %}
+
+         <table class="table">
+
+             <tr>
+                 <td>
+                     <input type="checkbox" name="checks" value="{{ unit.id }}" checked="checked"  /> / Этап: {{ unit.verification_stage }}
+                 </td>
+                 <td><b>id: {{ unit.id }}  </b></td>
+
+                 <td>Дата проверки:</td>
+                 <td><b>{{ unit.date_time }}</b> </td>
+             </tr>
+             <tr>
+                 <td>
+                     Серийный номер:
+                 </td>
+                 <td><b>{{ unit.serial_number }}</b></td>
+
+                 <td>Допуск к эксплуатации:</td>
+                 <td><b>{{ unit.result }}</b> </td>
+             </tr>
+         {% if unit.model.form_certificate == 1 %}
+
+             <tr>
+                 <td>Длительность сигнала (по минус 20 дБ) &tau;:</td>
+                 <td><b>{{ unit.echo_pulse_duration }}</b> мкс</td>
+
+                 <td>Рабочая частота <i>&fnof;<sub>c</sub></i>:</td>
+                 <td><b>{{ unit.operating_frequency }}</b> кГц</td>
+             </tr>
+             <tr>
+                 <td>Частота максимума АЧХ <i>&fnof;<sub>p</sub></i>:</td>
+                 <td><b>{{ unit.afc_frequency_maximum }}</b> кГц</td>
+
+                 <td>Коэффициент двойного преобразования <i>S<sub>rel</sub></i>:</td>
+                 <td><b>{{ unit.afc_maximum_s_rel }}</b> дБ</td>
+             </tr>
+
+             <tr>
+                 <td>Нижняя граничная частота АЧХ <i>&fnof;<sub>l</sub></i>:</td>
+                 <td><b>{{ unit.lower_afc_frequency }}</b> кГц</td>
+
+                 <td>Суммарная задержка сигнала в протекторах <i>t<sub>d</sub></i>: </td>
+                 <td><b>{{ unit.echo_pulse_delay }}</b> мкс</td>
+             </tr>
+             <tr>
+                 <td>Верхняя граничная частота АЧХ <i>&fnof;<sub>u</sub></i>:</td>
+                 <td><b>{{ unit.upper_afc_frequency }}</b> кГц</td>
+
+                 <td>Относительная полоса АЧХ (по минус 6 дБ) <i>B<sub>w</sub></i>:</td>
+                 <td><b>{{ unit.relative_transmission_bandwidth }}</b> %</td>
+             </tr>
+
+         {% elif unit.model.form_certificate == 2 %}
+
+             <tr>
+                 <td>Длительность первой полуволны &tau;:</td>
+                 <td><b>{{ unit.first_half_wave_duration }}</b> мкс</td>
+
+                 <td>Частота по первому периоду <i>&fnof;<sub>c</sub></i>:</td>
+                 <td><b>{{ unit.afc_frequency_maximum_first_wave }}</b> кГц</td>
+             </tr>
+             <tr>
+                 <td>Длительность фрона первой полуволны <i>&fnof;<sub>l</sub></i>:</td>
+                 <td><b>{{ unit.leading_front_duration }}</b> кГц</td>
+
+                 <td>Коэффициент двойного преобразования <i>S<sub>rel</sub></i>:</td>
+                 <td><b>{{ unit.afc_maximum_s_rel_first_half_wave }}</b> дБ</td>
+             </tr>
+
+             <tr>
+                 <td>Суммарная задержка сигнала в протекторах <i>t<sub>d</sub></i>: </td>
+                 <td><b>{{ unit.echo_pulse_delay }}</b> мкс</td>
+             </tr>
+
+         {% else %}
+
+                <h1> Форма паспорта не найдена </h1>
+
+            {% endif %}
+
+
+
+
+         </table>
+         <hr>
+         {% endfor %}
+      </form>
+
+{% endblock %}

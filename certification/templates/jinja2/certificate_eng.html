@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+{% for form in forms %}
+    {% if form.model.form_certificate == 1 %}
+        {% include "certification_form1_eng.html" %}
+    {% elif form.model.form_certificate == 2 %}
+        {% include "certification_form2_eng.html" %}
+    {% else %}
+        <body>
+        <h1> Форма паспорта не найдена </h1>
+        </body>
+    {% endif %}
+{% endfor %}
+</html>

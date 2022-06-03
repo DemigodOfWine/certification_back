@@ -1,0 +1,227 @@
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{{ static ('css/certificateA4_rus.css')}}">
+    <meta charset="UTF-8">
+    <title>{{form.model.model_name}}_{{form.serial_number}}_{{form.date_time }}</title>
+    <link rel="icon" href="{{ static ('favicon.ico')}}">
+</head>
+<body>
+<div class="page">
+    <header>
+           <img id = "header_img" src="{{ static ('colon_title_eng.png')}}">
+    </header>
+    <hr/>
+        <h1>Ultrasonic transducer {{form.model.model_name}}
+            {% if form.model.model_postfix == none %}
+            {% else -%}
+            {{ form.model.model_postfix }}
+            {% endif %}
+        </h1>
+        <h2>Serial number: {{form.serial_number}}</h2>
+        <h2>PASSPORT</h2>
+    <hr/>
+        <h2>Intended use</h2>
+        <p>
+            {{form.model.intended_use_eng}}
+        </p>
+    <hr/>
+        <h2>Main technical specifications</h2>
+        <table>
+        <td id = "tableMain_left_img">
+        <table id = "tableMain">
+            <tbody>
+                    <tr>
+                        <td>Type of generated wave mode:</td>
+                        <td>
+
+                            {% if form.base.wave_type == 'sh' %}
+                                Shear horizontal
+                            {% elif form.base.wave_type == 'l' %}
+                                Longitudinal
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Nominal frequency:</td>
+                        <td>{{form.base.afc_frequency_maximum_first_wave | round(0, 'common') }} kHz</td>
+                    </tr>
+                    <tr>
+                        <td>Double conversion ratio:</td>
+                        <td>> {{form.base.afc_maximum_s_rel_first_half_wave | round(0, 'common') }} dB</td>
+                    </tr>
+                    <tr>
+                        <td>Electric capacity of the piezoelectric element:</td>
+                        <td>({{form.base.capacity | round(0, 'common') }} &plusmn; {{form.ranges.capacity | round(0, 'common') }}) pF</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum excitation pulse voltage:</td>
+                        <td>< {{form.base.maximum_excitation_pulse_voltage | round(0, 'common') }} V</td>
+                    </tr>
+                <tr>
+                    <tr>
+                        <td>Connector type:</td>
+                        <td>
+                            {% if form.base.connector == None %}
+                                non-wired
+                            {% else %}
+                                {{form.base.connector}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Weight:</td>
+                        <td>
+                             {{ form.base.height | round(0, 'common')}}&#215;&#216;{{ form.base.diameter | round(0, 'common')}} mm
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Weight:</td>
+                        <td>< {{form.base.weight | round(0, 'common')}} g</td>
+                    </tr>
+                <tr>
+                    <td>Operating temperature range:</td>
+                    <td>{{form.base.temp_down | round(0, 'common')}} &deg;C to +{{form.base.temp_up | round(0, 'common')}} &deg;C</td>
+                </tr>
+            </tbody>
+        </table>
+        </td>
+        <td id = "tableMain_right_img"><img id="transducer_img" src="{{ form.model.photo.url }}"></td>
+        </table>
+
+    <hr/>
+    <h2>Measurement conditions and equipment used</h2>
+
+        <table id = "tableMeasurement" border="0">
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <p>
+                            The transducer test is performed by its direct contacting with the reference transducer
+                            with the pressing force of 4 Newtons. The transducer under test is fed by a transmitter
+                            pulse, while the signal acquired by the reference transducer is evaluated.
+                            The double-conversion ratio is calculated as a ratio of the first halfwave
+                            amplitude received by the reference transducer to the transmitter pulse amplitude.
+                            The operating frequency corresponds to the frequency spectrum maximum of the first signal cycle.
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td  class="tableMeasurement_td"><b>Excitation signal:</b></td>
+                    <td>
+                        square pulse with the amplitude {{ form.settings.zonder_amplitude }} V, duration 10 μs, equal to half period of the nominal.
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableMeasurement_td"><b>Receiver parameters:</b></td>
+                    <td>
+                       integrating amplifier with the bandwidth
+                        0.01 Hz – 400 kHz, input resistance 4 kΩ, equivalent input
+                        noise voltage 10 &mu;V.
+                    </td>
+                </tr>
+                <tr>
+                    <td  class="tableMeasurement_td"><b>Environmental conditions:</b></td>
+                    <td>temperature {{ form.temp | round(0, 'common') }} &deg;C, rel. {{ form.humid  | round(0, 'common') }} %.</td>
+                </tr>
+            </tbody>
+        </table>
+    <hr/>
+    <h2><b>Measured characteristics</b></h2>
+        <table id="tableMeasured" border="0">
+            <tbody>
+            <tr>
+                <td rowspan="3"><p class="vertical">Amplitude,&#160;mV</p></td>
+                <td><h2>Shape of the measured pulse</h2></td>
+                <td rowspan="3"><p class="vertical">Level,&#160;rel.un.</p></td>
+                <td><h2>Amplitude-frequency response</h2></td>
+            </tr>
+            <tr>
+                <td>
+                    <img id="measured_img" src="{{ static (osc_dir + (form.id | string) + '.png')}}">
+                </td>
+                <td>
+                    <img id="measured_img" src="{{ static (fft_dir + (form.id | string) + '.png')}}">
+                </td>
+            </tr>
+            <tr>
+                <td>Time, μs</td>
+                <td>Frequency, kHz</td>
+            </tr>
+            </tbody>
+        </table>
+        <table id="tableMeasuredDown">
+            <tbody>
+                <tr>
+                    <td>AFC frequency maximum first wave <i>&fnof;<sub>p</sub></i>:</td>
+                    <td><b>{{form.afc_frequency_maximum_first_wave | round(1, 'common')}}</b> kHz</td>
+
+                    <td>Double conversion ratio AFCmaximum <i>S<sub>rel</sub></i>:</td>
+                    <td><b>{{form.afc_maximum_s_rel_first_half_wave | round(1, 'common')}}</b> dB</td>
+
+                </tr>
+                <tr>
+                    <td>First half wave duration &tau;:</td>
+                    <td><b>{{form.first_half_wave_duration | round(1, 'common')}}</b> &mu;s</td>
+
+                    <td>Leading front duration <i>t<sub>d</sub></i>: </td>
+                    <td><b>&nbsp;{{form.leading_front_duration | round(1, 'common')}}</b> &mu;s</td>
+                </tr>
+                <tr>
+
+                </tr>
+            </tbody>
+        </table>
+        <hr/>
+
+        <table id="tablePerformedApproved" border="0">
+            <tbody>
+                <tr>
+                    <tr>
+                    <td>
+                        <p id="result">Permission for operation:
+                        {% if form.result -%}
+                                YES
+                            {% else -%}
+                                NO
+                            {% endif %}
+                        </p>
+                    </td>
+                        <td>
+                            <p id="result">
+                            {% if form.model.status == 'S' %}
+                                Base capsule: {{ form.serial_number_b }}
+                            {% else %}
+
+                            {% endif %}
+                            </p>
+                        </td>
+                        <td id="performed">Date of sale</td>
+                    </tr>
+                     <td id="performed">Testing performed by: <b>{{ form.operator.name_eng }}</b></td>
+                    <td id="performed">Approved by: <b>{{ form.controller.name_eng }}</b></td>
+
+                </tr>
+                <tr>
+                    <td colspan="2"><p id="MP">{{ form.date_time.strftime('%Y-%m-%d')}}</p></td>
+                    <td id="signature"></td>
+                </tr>
+                <tr>
+                    <td><p>	&copy;Acoustic Control Systems - ACS Group</p></td>
+                    <td><p id="garant">Warranty period 6 months from the date of sale </p></td>
+                </tr>
+            </tbody>
+        </table>
+    <br>
+
+    <table>
+
+
+    </table>
+
+
+</div>
+</body>
+{% endblock %}

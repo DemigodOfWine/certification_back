@@ -1,0 +1,241 @@
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{{ static ('css/certificateA4_rus.css')}}">
+    <meta charset="UTF-8">
+    <title>{{form.model.model_name}}_{{form.serial_number}}_{{form.date_time }}</title>
+    <link rel="icon" href="{{ static ('favicon.ico')}}">
+</head>
+<body>
+<div class="page">
+    <header>
+           <img id = "header_img" src="{{ static ('colon_title_rus.png')}}">
+    </header>
+    <hr/>
+        <h1>Ультразвуковой преобразователь {{ form.model.model_name }}
+            {% if form.model.model_postfix == none %}
+            {% else -%}
+            {{ form.model.model_postfix }}
+            {% endif %}
+        </h1>
+        <h2>ПАСПОРТ</h2>
+        <h2>{{form.base.apyas}}</h2>
+        <h2>Серийный номер: {{form.serial_number}}</h2>
+    <hr/>
+        <h2>Назначение</h2>
+        <p>
+            {{form.model.intended_use_rus}}
+        </p>
+    <hr/>
+        <h2>Основные характеристики</h2>
+        <table>
+        <td id = "tableMain_left_img">
+        <table id = "tableMain">
+            <tbody>
+                    <tr>
+                        <td>Основной тип возбуждаемых волн:</td>
+                        <td>
+                            {% if form.base.wave_type == 'sh' %}
+                                поперечные
+                            {% elif form.base.wave_type == 'l' %}
+                                продольные
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Номинальная частота:</td>
+                        <td>{{form.base.afc_frequency_maximum | round(0, 'common') }} кГц</td>
+                    </tr>
+                    <tr>
+                        <td>Рабочая частота:</td>
+                        <td>({{form.base.operating_frequency | round(0, 'common') }} &plusmn; 10) кГц</td>
+                    </tr>
+                    <tr>
+                        <td>Коэффициент двойного преобразования:</td>
+                        <td>не менее {{form.base.afc_maximum_s_rel | round(0, 'common') }} дБ</td>
+                    </tr>
+                    <tr>
+                        <td>Относительная полоса пропускания:</td>
+                        <td>не менее {{form.base.relative_transmission_bandwidth | round(0, 'common') }} %</td>
+                    </tr>
+                    <tr>
+                        <td>Емкость пьезоэлемента:</td>
+                        <td>({{form.base.capacity | round(0, 'common') }} &plusmn; {{form.ranges.capacity | round(0, 'common') }}) пФ</td>
+                    </tr>
+                    <tr>
+                        <td>Максимальная амплитуда импульса возбуждения:</td>
+                        <td>не более {{form.base.maximum_excitation_pulse_voltage | round(0, 'common') }} В</td>
+                    </tr>
+                <tr>
+                    <tr>
+                        <td>Тип разъёма:</td>
+                        <td>
+                            {% if form.base.connector == None %}
+                                без разъема
+                            {% else %}
+                                {{form.base.connector}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Габаритные размеры:</td>
+                        <td>
+                            не более {{ form.base.height | round(0, 'common') }}&#215;&#216;{{ form.base.diameter | round(0, 'common')}} мм
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Масса:</td>
+                        <td>не более {{form.base.weight | round(0, 'common') }} г</td>
+                    </tr>
+                <tr>
+                    <td>Диапазон рабочих температур:</td>
+                    <td>от {{form.base.temp_down | round(0, 'common')}} &deg;C до +{{form.base.temp_up | round(0, 'common')}} &deg;C</td>
+                </tr>
+            </tbody>
+        </table>
+        </td>
+        <td id = "tableMain_right_img"><img id="transducer_img" src="{{ form.model.photo.url }}"></td>
+        </table>
+
+    <hr/>
+    <h2>Условия измерений и используемое оборудование</h2>
+
+        <table id = "tableMeasurement" border="0">
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <p>
+                            Преобразователь испытывается в контакте с аналогичным образцовым
+                            преобразователем при силе сжатия протекторов 4 Н.
+                            На испытуемый преобразователь подаётся возбуждающий импульс.
+                            Сигнал с образцового преобразователя анализируется.
+                            Коэффициент двойного преобразования вычисляется как отношение амплитуды
+                            сигнала образцового преобразователя к амплитуде
+                            возбуждающего импульса.
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td  class="tableMeasurement_td"><b>Возбуждение:</b></td>
+                    <td>
+                        прямоугольный импульс {{ form.settings.zonder_amplitude }} В, длительность 10 мкс, равная полупериоду колебаний номинальной частоты.
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableMeasurement_td"><b>Прием:</b></td>
+                    <td>
+                        усилитель с полосой пропускания 0,01 – 400 кГц и
+                        входным сопротивлением 4 кОм. Эффективное значение шума,
+                        приведённого к входу усилителя, не более 10 мкВ, кабель с волновым сопротивлением 50 Ом.
+                    </td>
+                </tr>
+                <tr>
+                    <td  class="tableMeasurement_td"><b>Окружающая среда:</b></td>
+                    <td>температура {{ form.temp | round(0, 'common')}} &deg;C, относительная влажность {{ form.humid  | round(0, 'common') }} %.</td>
+                </tr>
+            </tbody>
+        </table>
+    <hr/>
+    <h2><b>Результаты измерений</b></h2>
+        <table id="tableMeasured" border="0">
+            <tbody>
+            <tr>
+                <td rowspan="3"><p class="vertical">Амплитуда,&#160;мВ</p></td>
+                <td><h2>Форма принятого сигнала</h2></td>
+                <td rowspan="3"><p class="vertical">Уровень,&#160;отн.ед.</p></td>
+                <td><h2>АЧХ</h2></td>
+            </tr>
+            <tr>
+                <td>
+                    <img id="measured_img" src="{{ static (osc_dir + (form.id | string) + '.png')}}">
+                </td>
+                <td>
+                    <img id="measured_img" src="{{ static (fft_dir + (form.id | string) + '.png')}}">
+                </td>
+            </tr>
+            <tr>
+                <td>Время, мкс</td>
+                <td>Частота, кГц</td>
+            </tr>
+            </tbody>
+        </table>
+        <table id="tableMeasuredDown">
+            <tbody>
+                <tr>
+                    <td>Длительность сигнала (по минус 20 дБ) &tau;:</td>
+                    <td><b>{{form.echo_pulse_duration | round(1, 'common')}}</b> мкс</td>
+
+                    <td>Рабочая частота <i>&fnof;<sub>c</sub></i>:</td>
+                    <td><b>&nbsp;{{form.operating_frequency | round(1, 'common')}}</b> кГц</td>
+                </tr>
+                <tr>
+                    <td>Частота максимума АЧХ <i>&fnof;<sub>p</sub></i>:</td>
+                    <td><b>{{form.afc_frequency_maximum | round(1, 'common')}}</b> кГц</td>
+
+                    <td>Коэффициент двойного преобразования <i>S<sub>rel</sub></i>:</td>
+                    <td><b>{{form.afc_maximum_s_rel | round(1, 'common')}}</b> дБ</td>
+                </tr>
+
+                <tr>
+                    <td>Нижняя граничная частота АЧХ <i>&fnof;<sub>l</sub></i>:</td>
+                    <td><b>{{form.lower_afc_frequency | round(1, 'common')}}</b> кГц</td>
+
+                    <td>Относительная полоса АЧХ (по минус 6 дБ) <i>B<sub>w</sub></i>:</td>
+                    <td><b>&nbsp;{{form.relative_transmission_bandwidth | round(1, 'common')}}</b> %</td>
+
+                </tr>
+
+            <tr>
+                    <td>Верхняя граничная частота АЧХ <i>&fnof;<sub>u</sub></i>:</td>
+                    <td><b>{{form.upper_afc_frequency | round(1, 'common')}}</b> кГц</td>
+
+            </tr>
+
+            </tbody>
+        </table>
+        <hr/>
+
+        <table id="tablePerformedApproved" border="0">
+            <tbody>
+                <tr>
+                    <tr>
+                    <td>
+                        <p id="result">Допуск к эксплуатации:
+                        {% if form.result -%}
+                                ДА
+                            {% else -%}
+                                НЕТ
+                            {% endif %}
+                        </p>
+                    </td>
+                        <td>
+                            {% if form.model.status == 'S' %}
+                                Base capsule: {{ form.serial_number_b }}
+                            {% else %}
+
+                            {% endif %}
+                        </td>
+                        <td id="performed">Дата продажи</td>
+                    </tr>
+                    <td id="performed">Измерения выполнил: <b>{{ form.operator.name_rus }}</b></td>
+                    <td id="performed">Приёмку провел: <b>{{ form.controller.name_rus}}</b></td>
+
+                </tr>
+                <tr>
+                    <td colspan="2"><p id="MP">{{ form.date_time.strftime('%d.%m.%Y') }} г.</p></td>
+                    <td id="signature"></td>
+                </tr>
+            </tbody>
+        </table>
+    <br>
+
+    <table>
+        <td><p id="garant">Гарантийный срок 3 месяца с даты продажи</p></td>
+        <td></td>
+    </table>
+
+
+</div>
+</body>
+{% endblock %}
